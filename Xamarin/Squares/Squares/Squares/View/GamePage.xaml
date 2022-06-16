@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:view="clr-namespace:Squares.View"
+             x:Class="Squares.View.GamePage"
+             Title="Squares">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="MainButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="CornflowerBlue" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="BorderWidth" Value="4"/>
+                <Setter Property="BorderColor" Value="DarkSlateBlue"/>
+                <Setter Property="BorderRadius" Value="32" />
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+            <Style TargetType="view:CustomGrid" x:Key="GameGridStyle">
+                <Setter Property="MinimumChildSizeRequest">
+                    <Setter.Value>
+                        <OnIdiom Phone="24" Tablet="32"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid BackgroundColor="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding GridClickCommand}"/>
+        </Grid.GestureRecognizers>
+
+        <!-- a gombokat a képernyő tetejére helyezzük -->
+        <Button Text="New game" Command="{Binding NewGameCommand}" Style="{StaticResource MainButtonStyle}" Grid.Row="0" HorizontalOptions="Start" />
+        <Button Text="Settings" Command="{Binding ExitCommand}" Style="{StaticResource MainButtonStyle}" Grid.Row="0" HorizontalOptions="End" />
+        
+        <view:CustomGrid Grid.Row="1" ColumnCount="{Binding TableSize}" Style="{StaticResource GameGridStyle}" BindableLayout.ItemsSource="{Binding Fields}" VisualElements="{Binding VisualElements}" >
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Button Command="{Binding ClickCommand}" CommandParameter="{Binding Coordinates}" CornerRadius="60" HorizontalOptions="Center">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <!-- change color based on enabled state -->
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsEnabled}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                        <Setter Property="BackgroundColor" Value="CornflowerBlue"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsEnabled}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                        <Setter Property="BackgroundColor" Value="#EEEEE4"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsHighlighted}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="GreenYellow"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </view:CustomGrid>
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding ScoreBoard}" ItemsLayout="HorizontalList" Margin="18,0,0,0" HorizontalOptions="Start">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout  Orientation="Horizontal" HorizontalOptions="Start">
+                        <Label Text="{Binding Key}" FontSize="18" VerticalOptions="Center"/>
+                        <Label Text="{Binding Value}" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+                        <BoxView WidthRequest="1" BackgroundColor="Gray" VerticalOptions="FillAndExpand" Margin="8,4,24,4"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <StackLayout Grid.Row="2" Orientation="Horizontal"  Margin="0,0,18,0" HorizontalOptions="End">
+            <Label Text="Current player: " FontSize="18" VerticalOptions="Center"/>
+            <Label Text="{Binding CurrentPlayer}" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+        </StackLayout>
+    </Grid>
+
+</ContentPage>

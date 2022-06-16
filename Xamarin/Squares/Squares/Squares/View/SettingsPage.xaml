@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Squares.View.SettingsPage"
+             Title="Settings">
+    <ContentPage.Resources>
+        <Style x:Key="MainButtonStyle" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="CornflowerBlue" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="BorderWidth" Value="4"/>
+            <Setter Property="BorderColor" Value="DarkSlateBlue"/>
+            <Setter Property="BorderRadius" Value="32" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
+        <ResourceDictionary>
+            <Style x:Key="MainLabelStyle" TargetType="Label">
+                <Setter Property="Margin" Value="8" />
+                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="FontSize" Value="Default" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout Orientation="Vertical">
+        <Button Command="{Binding LoadGameCommand}" Text="Load Game" Style="{StaticResource MainButtonStyle}" />
+        <Button Command="{Binding SaveGameCommand}" Text="Save Game" Style="{StaticResource MainButtonStyle}" />
+
+        <Label Text="Table size:" Style="{StaticResource MainLabelStyle}" />
+        <StackLayout Orientation="Horizontal">
+            <RadioButton IsChecked="{Binding Is3x3}" />
+            <Label Text="3x3" Style="{StaticResource MainLabelStyle}" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <RadioButton IsChecked="{Binding Is5x5}" />
+            <Label Text="5x5" Style="{StaticResource MainLabelStyle}" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <RadioButton IsChecked="{Binding Is9x9}" />
+            <Label Text="9x9" Style="{StaticResource MainLabelStyle}" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

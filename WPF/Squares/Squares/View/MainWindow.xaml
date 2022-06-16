@@ -1,0 +1,133 @@
+﻿<Window x:Class="Squares.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:Squares.View"
+        Title="Squares" Height="600" Width="600" MinHeight="500" MinWidth="500">
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.InputBindings>
+            <MouseBinding Gesture="LeftClick" Command="{Binding GridClickCommand}" />
+        </Grid.InputBindings>
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="New Game" Command="{Binding NewGameCommand}" />
+                <Separator />
+                <MenuItem Header="Load game..." Command="{Binding LoadGameCommand}" />
+                <MenuItem Header="Save game..." Command="{Binding SaveGameCommand}"/>
+                <Separator />
+                <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+            </MenuItem>
+            <MenuItem Header="Settings">
+                <MenuItem Header="3x3" IsCheckable="True" IsChecked="{Binding Is3x3, Mode=OneWay}" Command="{Binding RequestSizeChangeCommand}" CommandParameter="3"/>
+                <MenuItem Header="5x5" IsCheckable="True" IsChecked="{Binding Is5x5, Mode=OneWay}" Command="{Binding RequestSizeChangeCommand}" CommandParameter="5"/>
+                <MenuItem Header="9x9" IsCheckable="True" IsChecked="{Binding Is9x9, Mode=OneWay}" Command="{Binding RequestSizeChangeCommand}" CommandParameter="9"/>
+            </MenuItem>
+        </Menu>
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Fields}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <!--grid containing the dots, the lines and the squares-->
+                    <local:CustomGrid Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" VisualElements="{Binding VisualElements}"
+                                      Rows="{Binding TableSize}" Columns="{Binding TableSize}"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <!--the template of each item (dot)-->
+                <DataTemplate>
+                    <Button Command="{Binding ClickCommand}" CommandParameter="{Binding Coordinates}" Focusable="False" RenderTransformOrigin="0.5, 0.5">
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Grid>
+                                    <Ellipse Width="24" Height="24" Fill="{TemplateBinding Property=Background}"/>
+                                    <Ellipse Width="20" Height="20" Stroke="{TemplateBinding Property=Foreground}"/>
+                                    <Ellipse Width="8" Height="8" Fill="{TemplateBinding Property=Foreground}"/>
+                                    <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <!-- change color based on enabled state -->
+                                    <DataTrigger Binding="{Binding IsEnabled}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                        <Setter Property="Background" Value="White"></Setter>
+                                        <Setter Property="Foreground" Value="Black"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                        <Setter Property="Background" Value="White"></Setter>
+                                        <Setter Property="Foreground" Value="LightGray"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
+                                        <Setter Property="Background" Value="GreenYellow"></Setter>
+                                        <Setter Property="Foreground" Value="Black"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="25"/>
+                            </Style>
+                        </Button.Resources>
+                        <Button.RenderTransform>
+                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                        <Button.Triggers>
+                            <!-- button press animation -->
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:00:00.1" From="1" To="0.5" AutoReverse="True" Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)" />
+                                        <DoubleAnimation Duration="0:00:00.1" From="1" To="0.5" AutoReverse="True" Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Grid.Row" Value="{Binding Coordinates.X}" />
+                    <Setter Property="Grid.Column" Value="{Binding Coordinates.Y}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+        <StatusBar Grid.Row="2">
+            <!-- státuszsor a lépésszámhoz és az időhöz -->
+            <ItemsControl Grid.Column="0" ItemsSource="{Binding ScoreBoard}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <StatusBarItem>
+                                <TextBlock Text="{Binding Key}" FontSize="14"/>
+                            </StatusBarItem>
+                            <StatusBarItem>
+                                <TextBlock Text="{Binding Value}" FontWeight="Bold" FontSize="16"/>
+                            </StatusBarItem>
+                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <StatusBarItem  Content="Current player: " FontSize="14"/>
+                    <StatusBarItem Content="{Binding CurrentPlayer}" FontWeight="Bold" FontSize="16"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

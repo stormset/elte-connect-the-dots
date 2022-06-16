@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Squares.View.SaveGamePage"
+             Title="Save game">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="NameStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="Margin" Value="20,20,10,0" />
+            </Style>
+            <Style x:Key="ModifiedStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Small" />
+                <Setter Property="Margin" Value="25,0,5,0" />
+            </Style>
+            <Style x:Key="MainButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="CornflowerBlue" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="BorderWidth" Value="4"/>
+                <Setter Property="BorderColor" Value="DarkSlateBlue"/>
+                <Setter Property="BorderRadius" Value="32" />
+                <Setter Property="Margin" Value="48,0,48,0" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout Orientation="Vertical">
+        <Frame Margin="48,16,48,0" Padding="4" BorderColor="DarkSlateBlue" IsClippedToBounds="true">
+            <Entry x:Name="saveNameEntry" />
+        </Frame>
+        <Button Text="Save" Command="{Binding NewSaveCommand}" CommandParameter="{Binding Source={x:Reference saveNameEntry}, Path=Text}"  Style="{StaticResource MainButtonStyle}"/>
+
+        <CollectionView ItemsSource="{Binding StoredGames}" EmptyView="No items to display">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="{Binding Name}" Style="{StaticResource NameStyle}"/>
+                        <Label Text="{Binding Modified}" Style="{StaticResource ModifiedStyle}" />
+                        <BoxView HeightRequest="1" BackgroundColor="Black" HorizontalOptions="FillAndExpand" />
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SaveGameCommand}" CommandParameter="{Binding Name}" />
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+</ContentPage>
