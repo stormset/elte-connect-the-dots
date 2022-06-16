@@ -8,6 +8,6 @@ Written in C# using Windows Forms, WPF and Xamarin frameworks.
 
 ## Screenshots
 <p float="left">
-<img src="./screenshots/playing_1.png"  alt="Game playing"  width="50%"/>
-<img src="./screenshots/playing_2.png"  alt="Game playing (after selecting item)"  width="50%"/>
+<img src="./screenshots/playing_1.png"  alt="Game playing"  width="500px"/>
+<img src="./screenshots/playing_2.png"  alt="Game playing (after selecting item)"  width="500px"/>
 </p>
